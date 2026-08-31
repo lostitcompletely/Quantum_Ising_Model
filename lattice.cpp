@@ -8,9 +8,11 @@ class Lattice {
         double J;
         double T;
         std::vector<std::vector<Qubit>> lattice;
+        std::mt19937 rng;
         Lattice(int n_columns, int n_rows, double J, double T){
             this -> J = J;
             this -> T = T;
+            this -> rng = std::mt19937(1234);
             double beta = 1.0 / T;
             //std::vector<std::vector<Qubit>> lattice;
             for (int i = 0; i < n_columns; i++){
@@ -73,6 +75,19 @@ class Lattice {
                 };
             };
             return e_z;
+        };
+
+        std::vector<std::vector<int>> choose_random_state(){
+            std::vector<std::vector<int>> random_state;
+            std::uniform_int_distribution<int> dist(0, 1);
+            for (int i=0; i<lattice.size(); i++){
+                std::vector<int> row;
+                for (int j=0; j<lattice[0].size(); j++){
+                    row.push_back(dist(rng));
+                }
+                random_state.push_back(row);
+            }
+            return random_state;
         };
 
         double hamiltonian_x(std::vector<std::vector<Qubit>> qubits){
