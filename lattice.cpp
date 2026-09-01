@@ -60,6 +60,20 @@ class Lattice {
             }
         };
 
+        std::vector<std::vector<int>> get_parities(std::vector<std::vector<Qubit>> qubits){
+            Qubit control(1.0, 0.0);
+            std::vector<std::vector<int>> parities;
+            for (int i=0; i<qubits.size(); i++){
+                std::vector<int> row;
+                for (int j=0; j<qubits[0].size(); j++){
+                    int parity = CNOT(control, i, j);
+                    row.push_back(parity);
+                };
+                parities.push_back(row);
+            };
+            return parities;
+        };
+
         double hamiltonian_z(std::vector<std::vector<int>> parities){
             std::vector<double> hamiltonian;
             double e_z = 0.0;
@@ -77,28 +91,43 @@ class Lattice {
             return e_z;
         };
 
-        std::vector<std::vector<int>> choose_random_state(){
-            std::vector<std::vector<int>> random_state;
+        std::vector<std::vector<Qubit>> choose_random_state(){
+            std::vector<std::vector<Qubit>> random_state;
             std::uniform_int_distribution<int> dist(0, 1);
             for (int i=0; i<lattice.size(); i++){
-                std::vector<int> row;
+                std::vector<Qubit> row;
                 for (int j=0; j<lattice[0].size(); j++){
-                    row.push_back(dist(rng));
+                    int n = dist(rng);
+                    int alpha = (0 + n) % 2;
+                    int beta = (1 + n) % 2;
+                    row.push_back(Qubit(alpha, beta));
                 }
                 random_state.push_back(row);
             }
             return random_state;
         };
 
+        double psi(std::vector<std::vector<Qubit>> qubits){
+            return 1.0;
+        };
+
         double hamiltonian_x(std::vector<std::vector<Qubit>> qubits){
             double e_x = 0.0;
+            double N = 0.0;
             std::vector<std::vector<double>> M = {{0,1}, {1,0}};
             for (int i=0; i<qubits.size(); i++){
                 for (int j=0; j<qubits.size(); j++){
                     std::vector<std::vector<Qubit>> duplicate = qubits;
                     duplicate[i][j] = flip_spin(duplicate[i][j]);
+                    N = N + std::pow(psi(duplicate), 2);
+                    e_x = e_x + (psi(duplicate)*psi(qubits));
                 };
             };
-            return e_x;
+            return e_x / N;
+        };
+
+        double calculate_energy(){
+            std::vector<std::vector<Qubit>> microstate = choose_random_state();
+            return hamiltonian_z(get_parities(microstate)) + hamiltonian_x(microstate);
         };
 };

@@ -15,8 +15,9 @@ class Lattice {
         void switch_neighbours(int i1, int j1, int i2, int j2);
         Qubit flip_spin(Qubit& contol, int i, int j);
         int CNOT(Qubit& control, Qubit& qubit);
-        std::vector<int> parity_check();
-        std::vector<std::vector<int>> choose_random_state();
+        std::vector<std::vector<int>> get_parities(std::vector<std::vector<Qubit>> qubits);
+        std::vector<std::vector<Qubit>> choose_random_state();
+        double psi(std::vector<std::vector<Qubit>> qubits);
         double hamiltonian_z(std::vector<std::vector<int>> parities);
         double hamiltonian_x(std::vector<std::vector<Qubit>> qubits);
         double calculate_energy();
