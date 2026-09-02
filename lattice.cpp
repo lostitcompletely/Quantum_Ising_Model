@@ -7,11 +7,13 @@ class Lattice {
     public:
         double J;
         double T;
+        double h;
         std::vector<std::vector<Qubit>> lattice;
         std::mt19937 rng;
-        Lattice(int n_columns, int n_rows, double J, double T){
+        Lattice(int n_columns, int n_rows, double J, double T, double h){
             this -> J = J;
             this -> T = T;
+            this -> h = h;
             this -> rng = std::mt19937(1234);
             double beta = 1.0 / T;
             //std::vector<std::vector<Qubit>> lattice;
@@ -119,11 +121,10 @@ class Lattice {
                 for (int j=0; j<qubits.size(); j++){
                     std::vector<std::vector<Qubit>> duplicate = qubits;
                     duplicate[i][j] = flip_spin(duplicate[i][j]);
-                    N = N + std::pow(psi(duplicate), 2);
-                    e_x = e_x + (psi(duplicate)*psi(qubits));
+                    e_x = e_x - (h*psi(duplicate)/psi(qubits));
                 };
             };
-            return e_x / N;
+            return e_x;
         };
 
         double calculate_energy(){
