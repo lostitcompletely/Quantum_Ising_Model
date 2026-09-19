@@ -4,7 +4,8 @@
 
 class Lattice {
     public:
-        Lattice(int n_columns, int n_rows, double J, double T);
+        Lattice();
+        Lattice(int n_columns, int n_rows, double J, double T, double h);
         double J;
         double T;
         double beta;
@@ -20,6 +21,6 @@ class Lattice {
         double psi(std::vector<std::vector<Qubit>> qubits);
         double hamiltonian_z(std::vector<std::vector<int>> parities);
         double hamiltonian_x(std::vector<std::vector<Qubit>> qubits);
-        double calculate_energy();
+        double calculate_energy(std::vector<std::vector<Qubit>> microstate);
         double calculate_weight();
 };

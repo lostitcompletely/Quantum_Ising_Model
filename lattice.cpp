@@ -10,6 +10,7 @@ class Lattice {
         double h;
         std::vector<std::vector<Qubit>> lattice;
         std::mt19937 rng;
+        Lattice(){};
         Lattice(int n_columns, int n_rows, double J, double T, double h){
             this -> J = J;
             this -> T = T;
@@ -24,6 +25,7 @@ class Lattice {
                 };
                 lattice.push_back(row);
             };
+            this -> lattice = lattice;
         };
 
         std::vector<std::vector<int>> get_neighbours(int i, int j){
@@ -127,8 +129,7 @@ class Lattice {
             return e_x;
         };
 
-        double calculate_energy(){
-            std::vector<std::vector<Qubit>> microstate = choose_random_state();
+        double calculate_energy(std::vector<std::vector<Qubit>> microstate){
             return hamiltonian_z(get_parities(microstate)) + hamiltonian_x(microstate);
         };
 };
